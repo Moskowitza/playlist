@@ -17,7 +17,7 @@ connection.connect(function (err) {
     console.log("connected as id " + connection.threadId);
     // connection.end();
     afterConnection();
-    afterClassicRock()
+
 });
 
 
@@ -28,8 +28,7 @@ function afterConnection() {
             console.log(res[i].id + "|" + res[i].title + "|" + res[i].artist + "|" + res[i].genre + "|");
         }
         console.log("-------------------")
-
-        connection.end();
+        afterClassicRock()
     });
 }
 function afterClassicRock() {
@@ -40,6 +39,71 @@ function afterClassicRock() {
         }
         console.log("-------------------")
         // connection.end();
+        createPlaylist();
     });
-    console.log(query.sql);
 }
+function createPlaylist() {
+    console.log("Inserting a track into Playlist...\n");
+    var query = connection.query(
+        "INSERT INTO playlist SET ?",
+        {
+            title: "Never Had to Knock on Wood",
+            artist: "Mighty Mighty Bosstones",
+            genre: "Ska"
+        },
+        function (err, res) {
+            console.log(res.affectedRows + " track inserted");
+            updatePlaylist();
+            // connection.end();
+
+        }
+    )
+}
+function updatePlaylist() {
+    console.log("Updating Playlist Superchunk...\n");
+    var query = connection.query(
+        "UPDATE playlist SET ? WHERE ?",
+        [
+            {
+                genre: "Alternative"
+
+            },
+            {
+                artist: "Superchunk"
+            }
+        ],
+        //SOMETHING IS WRONG HERE
+        function (err, res) {
+            console.log(res.affectedRows + " tracks are updated!\n");
+            deletePlaylist();
+            // connection.end();
+
+        }
+    )
+}
+
+function deletePlaylist() {
+    console.log("Deleting from playlist...\n");
+    var query = connection.query("DELETE FROM playlist WHERE ?",
+        {
+            genre: "Rock"
+        },
+        function (err, res) {
+            console.log(res.affectedRows + " playlist Updated");
+            readPlaylist();
+        }
+    );
+}
+function readPlaylist(){
+    console.log("Selecting all playlist...\n");
+  var query = connection.query("SELECT * FROM playlist", function(err,res){
+      if (err) throw err;
+      //log all results of the SELECT STATEMENT
+      console.log(res);
+      connection.end();
+  });
+  console.log(query.sql);
+}
+
+
+
