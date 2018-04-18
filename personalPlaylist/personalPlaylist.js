@@ -99,7 +99,10 @@ function readPlaylist(){
   var query = connection.query("SELECT * FROM playlist", function(err,res){
       if (err) throw err;
       //log all results of the SELECT STATEMENT
-      console.log(res);
+      for (var i = 0; i < res.length; i++) {
+        console.log(res[i].id + "|" + res[i].title + "|" + res[i].artist + "|" + res[i].genre + "|");
+    }
+    console.log("-------------------")
       connection.end();
   });
   console.log(query.sql);
